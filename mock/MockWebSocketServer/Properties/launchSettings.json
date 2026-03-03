@@ -1,0 +1,16 @@
+{
+  "profiles": {
+    "Port5001": {
+      "commandName": "Project",
+      "applicationUrl": "http://localhost:5001"
+    },
+    "Port5002": {
+      "commandName": "Project",
+      "applicationUrl": "http://localhost:5002"
+    },
+    "Port5003": {
+      "commandName": "Project",
+      "applicationUrl": "http://localhost:5003"
+    }
+  }
+}

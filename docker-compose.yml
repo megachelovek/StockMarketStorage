@@ -1,0 +1,55 @@
+services:
+  app:
+    build: .
+    environment:
+      - ConnectionStrings__DefaultConnection=Host=postgres;Port=5432;Database=stockmarket;Username=postgres;Password=postgres
+      - WebSocketSources__Sources__0__SourceName=MockSource1
+      - WebSocketSources__Sources__0__Uri=ws://mock1:5001/ws
+      - WebSocketSources__Sources__0__ReconnectDelayMs=3000
+      - WebSocketSources__Sources__1__SourceName=MockSource2
+      - WebSocketSources__Sources__1__Uri=ws://mock2:5001/ws
+      - WebSocketSources__Sources__1__ReconnectDelayMs=3000
+      - WebSocketSources__Sources__2__SourceName=MockSource3
+      - WebSocketSources__Sources__2__Uri=ws://mock3:5001/ws
+      - WebSocketSources__Sources__2__ReconnectDelayMs=3000
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: stockmarket
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  mock1:
+    build:
+      context: .
+      dockerfile: mock/Dockerfile
+    ports:
+      - "5001:5001"
+    command: ["--urls", "http://0.0.0.0:5001"]
+
+  mock2:
+    build:
+      context: .
+      dockerfile: mock/Dockerfile
+    ports:
+      - "5002:5001"
+    command: ["--urls", "http://0.0.0.0:5001"]
+
+  mock3:
+    build:
+      context: .
+      dockerfile: mock/Dockerfile
+    ports:
+      - "5003:5001"
+    command: ["--urls", "http://0.0.0.0:5001"]
